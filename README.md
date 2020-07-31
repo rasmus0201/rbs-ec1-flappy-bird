@@ -14,8 +14,8 @@ For this you will need the following software/hardware:
 # Installation
 1. Clone this repository: `git clone git@github.com:rasmus0201/rbs-ec1-flappy-bird.git`
 2. Make sure dependencies (libraries) are installed
-   - mbed-os (version 6)
-   - BSP_DISCO_F746NG (version `85dbcff443aa20e932494823e42c6d2a9550d17a`) (import from `https://os.mbed.com/teams/ST/code/BSP_DISCO_F746NG/`)
+   - mbed-os (version 6.2.0 - commit `a2ada74770f043aff3e61e29d164a8e78274fcd4`) (import from `https://github.com/ARMmbed/mbed-os.git`)
+   - BSP_DISCO_F746NG (version commit `85dbcff443aa20e932494823e42c6d2a9550d17a`) (import from `https://os.mbed.com/teams/ST/code/BSP_DISCO_F746NG/`)
 3. Compile the code on your favorite platform
 4. Upload the binary to the board
 
