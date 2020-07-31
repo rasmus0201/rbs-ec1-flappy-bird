@@ -21,4 +21,4 @@ For this you will need the following software/hardware:
 
 
 # Documentation
-Find the docs in Documentation.md
+Find the docs in [Documentation.md](Documentation.md)
