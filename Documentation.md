@@ -26,7 +26,13 @@ I've chosen to make this game since I thought it would be challenging, fun and c
     - Score - should be attached to how long the user gets.
 
 ## 2. Game features
+You can use touch or the button to make the bird fly (go up). If you don't do anything the bird will accelerate to the ground. The goal is to get between the top and bottom pipes without hitting them. You do this to everytime a pipe comes towards the flappy bird.
 
+You die if you:
+- Hit the bottom of the screen (the ground)
+- Hit any pipe
+
+Theme (background color and fill color) change when the room temperature rises (it is getting hotter) and when it falls (it is getting colder)
 
 ## 3. Map of input/output peripherals
 - LCD/Touch screen:
