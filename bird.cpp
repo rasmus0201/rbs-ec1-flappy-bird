@@ -9,8 +9,7 @@ Bird::Bird() {
 void Bird::Init(int xPos, int yPos, int size, float gravity, float lift) {
     this->x = xPos;
     this->y = yPos;
-    this->w = size;
-    this->h = size;
+    this->size = size;
     this->g = gravity;
     this->l = lift;
     
@@ -26,12 +25,8 @@ int Bird::GetY() {
     return this->y;
 };
 
-int Bird::GetWidth() {
-    return this->w;
-};
-
-int Bird::GetHeight() {
-    return this->h;
+int Bird::GetSize() {
+    return this->size;
 };
 
 void Bird::Up() {
@@ -42,8 +37,8 @@ void Bird::Update() {
     this->velocity += this->g;
     this->y += int(this->velocity);
 
-    if (this->y > (this->SCREEN_HEIGHT - this->w)) {
-        this->y = (this->SCREEN_HEIGHT - this->w);
+    if (this->y > (this->SCREEN_HEIGHT - this->size)) {
+        this->y = (this->SCREEN_HEIGHT - this->size);
         this->velocity = 0;
     }
 
@@ -58,7 +53,7 @@ void Bird::Draw() {
     BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
 
     // Draw it
-    BSP_LCD_FillRect(this->x, this->y, this->w, this->h);
+    BSP_LCD_FillRect(this->x, this->y, this->size, this->size);
 
     // Restore back color
     BSP_LCD_SetBackColor(prevColor);
