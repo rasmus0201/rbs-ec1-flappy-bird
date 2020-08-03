@@ -6,6 +6,8 @@ For this you will need the following software/hardware:
 - 1 &times; Base shield
 - 1 &times; USB cabel (USB to micro B)
 - 1 &times; Grove Button
+- 1 &times; Grove LED socket
+- 1 &times; Grove Red LED
 - 1 &times; 26AWG Grove Cable
 
 ### Software:
