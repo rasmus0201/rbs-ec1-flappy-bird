@@ -8,8 +8,6 @@ InterruptIn fly_btn(D2);
 DigitalOut builtin_led(LED1);
 
 Bird flappy;
-// int PROGRAM_STATE = 0;
-// int GAME_SCORE = 0;
 
 class ProgramState
 {
@@ -60,13 +58,15 @@ void fly_btn_activator_rise()
     flappy.Up();
 }
 
-void init_lcd() {
+void init_lcd()
+{
     BSP_LCD_Init();
     BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FB_START_ADDRESS);
     BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
 }
 
-bool init_touch() {
+bool init_touch()
+{
     uint8_t status = BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
     if (status != TS_OK) {
         BSP_LCD_Clear(LCD_COLOR_RED);
@@ -85,7 +85,8 @@ unsigned number_of_digits(unsigned i)
     return i > 0 ? (int) log10 ((double) i) + 1 : 1;
 }
 
-void show_start(ProgramState state) {
+void show_start(ProgramState *state)
+{
     BSP_LCD_SetFont(&Font20);
 
     BSP_LCD_Clear(LCD_COLOR_GREEN);
@@ -109,28 +110,29 @@ void show_start(ProgramState state) {
 
     BSP_LCD_SetFont(&Font20);
 
-    if (state.screenState.touchDetected) {
+    if (state->screenState.touchDetected) {
         bool pressed = true;
 
-        if (!(state.screenState.touchX[0] > btnX && state.screenState.touchX[0] < (btnX + btnWidth))) {
+        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
             pressed = false;
         }
-        
-        if (!(state.screenState.touchY[0] > btnY && state.screenState.touchY[0] < (btnY + btnHeight))) {
+
+        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
             pressed = false;
         }
 
         if (pressed) {
-            state.programState = 1;
-            state.gameScore = 0;
+            state->programState = 1;
+            state->gameScore = 0;
         }
     }
 }
 
-void show_gameover(ProgramState state) {
-    uint8_t scoreStr[13 + number_of_digits(state.gameScore)];
+void show_gameover(ProgramState *state)
+{
+    uint8_t scoreStr[13 + number_of_digits(state->gameScore - 1)];
     BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", state.gameScore);
+    sprintf((char *)scoreStr, "Your score: %d", state->gameScore - 1);
 
     BSP_LCD_Clear(LCD_COLOR_RED);
     BSP_LCD_SetBackColor(LCD_COLOR_RED);
@@ -154,20 +156,20 @@ void show_gameover(ProgramState state) {
 
     BSP_LCD_SetFont(&Font20);
 
-    if (state.screenState.touchDetected) {
+    if (state->screenState.touchDetected) {
         bool pressed = true;
 
-        if (!(state.screenState.touchX[0] > btnX && state.screenState.touchX[0] < (btnX + btnWidth))) {
+        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
             pressed = false;
         }
         
-        if (!(state.screenState.touchY[0] > btnY && state.screenState.touchY[0] < (btnY + btnHeight))) {
+        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
             pressed = false;
         }
 
         if (pressed) {
-            state.programState = 1;
-            state.gameScore = 0;
+            state->programState = 1;
+            state->gameScore = 0;
         }
     }
 }
@@ -194,21 +196,6 @@ int main()
 
     ProgramState state;
 
-    // TS_StateTypeDef TS_State;
-    // int FRAME_COUNT = 0;
-    // int FRAME_DELAY = 50;
-    // int PIPE_COUNT = 16;
-    // int PIPE_SPAWN_FRAME = 50;
-    // int PIPE_SPACING = 90;
-    // int PIPE_SPEED = 5;
-    // int PIPE_WIDTH = 40;
-
-    // int FLAPPY_X_POS = 160;
-    // int FLAPPY_Y_POS = 136;
-    // float GRAVITY = 0.7;
-    // float LIFT = -5;
-    // int FLAPPY_SIZE = 10;
-
     flappy.Init(
         state.flappyXPos,
         state.flappyYPos,
@@ -234,7 +221,7 @@ int main()
         state.UpdateScreenState();
 
         if (state.programState == 0) {
-            show_start(state);
+            show_start(&state);
         }
 
         if (state.programState == 1) {
@@ -272,6 +259,8 @@ int main()
                         state.gravity,
                         state.lift
                     );
+
+                    state.frameCount = 0;
                 }
             }
 
@@ -298,10 +287,7 @@ int main()
         }
 
         if (state.programState == 2) {
-            state.frameCount = 0;
-            state.gameScore -= 1;
-
-            show_gameover(state);
+            show_gameover(&state);
         }
 
         HAL_Delay(state.frameDelay);
