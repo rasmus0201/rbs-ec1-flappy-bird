@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
+#include "InteractiveButton.h"
 #include "bird.h"
 #include "pipe.h"
 
@@ -16,6 +17,7 @@ class ProgramState
             BSP_TS_GetState(&this->screenState);
             
             this->programState = 0;
+            this->stateChanged = true;
             this->gameScore = 0;
             this->frameCount = 0;
             this->frameDelay = 50;
@@ -37,6 +39,7 @@ class ProgramState
     
     public:
         int programState;
+        bool stateChanged;
         int gameScore;
         TS_StateTypeDef screenState;
         int frameCount;
@@ -85,7 +88,7 @@ unsigned number_of_digits(unsigned i)
     return i > 0 ? (int) log10 ((double) i) + 1 : 1;
 }
 
-void show_start(ProgramState *state)
+void show_start(ProgramState *state, InteractiveButton btn)
 {
     BSP_LCD_SetFont(&Font20);
 
@@ -97,38 +100,17 @@ void show_start(ProgramState *state)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-    int btnX = int(480/2 - 55);
-    int btnY = int(272/2);
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
+    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"PLAY", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"PLAY", CENTER_MODE);
 
     BSP_LCD_SetFont(&Font20);
-
-    if (state->screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-
-        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            state->programState = 1;
-            state->gameScore = 0;
-        }
-    }
 }
 
-void show_gameover(ProgramState *state)
+void show_gameover(ProgramState *state, InteractiveButton btn)
 {
     uint8_t scoreStr[13 + number_of_digits(state->gameScore - 1)];
     BSP_LCD_SetFont(&Font20);
@@ -143,35 +125,14 @@ void show_gameover(ProgramState *state)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-    int btnX = int(480/2 - 55); // 185 - 285
-    int btnY = int(272/2); // 136 - 186
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
+    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"RESTART", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"RESTART", CENTER_MODE);
 
     BSP_LCD_SetFont(&Font20);
-
-    if (state->screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-        
-        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            state->programState = 1;
-            state->gameScore = 0;
-        }
-    }
 }
 
 int main()
@@ -217,11 +178,36 @@ int main()
         pipes[i] = nullptr;
     }
 
+    InteractiveButton startBtn(
+        int(480/2 - 55),
+        int(272/2),
+        100,
+        50
+    );
+
+    InteractiveButton restartBtn(
+        int(480/2 - 55),
+        int(272/2),
+        100,
+        50
+    );
+
     while(1) {
         state.UpdateScreenState();
 
         if (state.programState == 0) {
-            show_start(&state);
+            if (state.stateChanged) {
+                show_start(&state, startBtn);
+
+                state.stateChanged = false;
+            }
+
+            if (startBtn.IsPressed()) {
+                state.programState = 1;
+                state.gameScore = 0;
+
+                state.stateChanged = true;
+            }
         }
 
         if (state.programState == 1) {
@@ -261,6 +247,7 @@ int main()
                     );
 
                     state.frameCount = 0;
+                    state.stateChanged = true;
                 }
             }
 
@@ -287,7 +274,18 @@ int main()
         }
 
         if (state.programState == 2) {
-            show_gameover(&state);
+            if (state.stateChanged) {
+                show_gameover(&state, restartBtn);
+
+                state.stateChanged = false;
+            }
+
+            if (restartBtn.IsPressed()) {
+                state.programState = 1;
+                state.gameScore = 0;
+
+                state.stateChanged = true;
+            }
         }
 
         HAL_Delay(state.frameDelay);
