@@ -161,6 +161,7 @@ int main()
     while(1) {
         BSP_TS_GetState(&screenState);
         
+        // START STATE
         if (state.programState == 0) {
             if (state.stateChanged) {
                 show_start(&state, startBtn);
@@ -176,6 +177,7 @@ int main()
             }
         }
 
+        // PLAY STATE
         if (state.programState == 1) {
             BSP_LCD_Clear(LCD_COLOR_GREEN);
 
@@ -191,10 +193,12 @@ int main()
                 pipes[i]->Draw();
                 pipes[i]->Update();
 
+                // Check if the bird hit the pipe
                 if (pipes[i]->Collides(flappy)) {
                     state.programState = 2;
                     state.frameCount = 0;
                     state.stateChanged = true;
+                    state.gameScore--; // They did not get through, so to compensate for the follwing ++ we decrement here
                     
                     pipeIndex = 0;
                     pipes[pipeIndex++] = new Pipe(
@@ -268,6 +272,7 @@ int main()
             state.frameCount++;
         }
 
+        // GAMEOVER STATE
         if (state.programState == 2) {
             if (state.stateChanged) {
                 show_gameover(&state, restartBtn);

@@ -1,5 +1,20 @@
+/**
+ * @file ProgramState.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Code for class
+ * @version 0.1
+ * @date 2020-08-03
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include "ProgramState.h"
 
+/**
+ * @brief Construct a new Program State:: Program State object
+ *
+ */
 ProgramState::ProgramState() {
     this->programState = 0;
     this->stateChanged = true;
