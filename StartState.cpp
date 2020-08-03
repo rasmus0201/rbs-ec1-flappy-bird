@@ -11,12 +11,13 @@
 
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
+#include "GameData.h"
 #include "GameEngine.h"
 #include "StartState.h"
 
 StartState StartState::state;
 
-void StartState::Init()
+void StartState::Init(GameEngine *game)
 {
     printf("StartState Init\n");
     BSP_LCD_SetFont(&Font20);
@@ -48,39 +49,41 @@ void StartState::Init()
     BSP_LCD_SetFont(&Font20);
 };
 
-void StartState::Cleanup()
+void StartState::Cleanup(GameEngine *game)
 {
     printf("StartState Cleanup\n");
 };
 
-void StartState::Pause()
+void StartState::Pause(GameEngine *game)
 {
     printf("StartState Pause\n");
 };
 
-void StartState::Resume()
+void StartState::Resume(GameEngine *game)
 {
     printf("StartState Resume\n");
 };
 
 void StartState::HandleEvents(GameEngine *game)
 {
-    if (state.screenState.touchDetected) {
+    GameData gameData = game->GetGameData();
+
+    if (gameData.screenState.touchDetected) {
         bool pressed = true;
 
         if (
-            !(state.screenState.touchX[0] > btnX && state.screenState.touchX[0] < (btnX + btnWidth))
+            !(gameData.screenState.touchX[0] > btnX && gameData.screenState.touchX[0] < (btnX + btnWidth))
         ) {
             pressed = false;
         }
 
-        if (!(state.screenState.touchY[0] > btnY && state.screenState.touchY[0] < (btnY + btnHeight))) {
+        if (!(gameData.screenState.touchY[0] > btnY && gameData.screenState.touchY[0] < (btnY + btnHeight))) {
             pressed = false;
         }
 
         if (pressed) {
-            state.programState = 1;
-            state.gameScore = 0;
+            gameData.programState = 1;
+            gameData.gameScore = 0;
         }
     }
 };

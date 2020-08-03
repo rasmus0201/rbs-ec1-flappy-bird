@@ -7,10 +7,11 @@
 #include "GameEngine.h"
 #include "StartState.h"
 
+GameData gameData;
 InterruptIn fly_btn(D2);
 DigitalOut builtin_led(LED1);
 
-void fly_btn_activator_rise(GameData gameData)
+void fly_btn_activator_rise()
 {
     gameData.flappy.Up();
 }
@@ -33,56 +34,6 @@ bool init_touch() {
     }
 
     return true;
-}
-
-unsigned number_of_digits(unsigned i)
-{
-    return i > 0 ? (int) log10 ((double) i) + 1 : 1;
-}
-
-void show_gameover(GameData gameData) {
-    uint8_t scoreStr[13 + number_of_digits(gameData.gameScore)];
-    BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", gameData.gameScore);
-
-    BSP_LCD_Clear(LCD_COLOR_RED);
-    BSP_LCD_SetBackColor(LCD_COLOR_RED);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, LINE(3), (uint8_t *)"GAMEOVER", CENTER_MODE);
-    BSP_LCD_DisplayStringAt(0, LINE(4), (uint8_t *)scoreStr, CENTER_MODE);
-
-    BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-    int btnX = int(480/2 - 55); // 185 - 285
-    int btnY = int(272/2); // 136 - 186
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
-    
-    BSP_LCD_SetFont(&Font16);
-    BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"RESTART", CENTER_MODE);
-
-    BSP_LCD_SetFont(&Font20);
-
-    if (gameData.screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(gameData.screenState.touchX[0] > btnX && gameData.screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-        
-        if (!(gameData.screenState.touchY[0] > btnY && gameData.screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            gameData.programState = 1;
-            gameData.gameScore = 0;
-        }
-    }
 }
 
 int main()
@@ -108,7 +59,6 @@ int main()
     BSP_LCD_Clear(LCD_COLOR_GREEN);
 
     GameEngine game;
-    GameData gameData;
 
     gameData.flappy.Init(
         gameData.flappyXPos,
@@ -118,7 +68,7 @@ int main()
         gameData.lift
     );
 
-    fly_btn.rise(&fly_btn_activator_rise(gameData));
+    fly_btn.rise(&fly_btn_activator_rise);
 
     game.Init(gameData);
 
@@ -134,97 +84,99 @@ int main()
 
     game.Cleanup();
 
-    int pipeIndex = 0;
-    Pipe *pipes[gameData.pipeCount];
+    return 0;
 
-    pipes[pipeIndex++] = new Pipe(
-        gameData.pipeWidth,
-        gameData.pipeSpacing,
-        gameData.pipeSpeed
-    );
+    // int pipeIndex = 0;
+    // Pipe *pipes[gameData.pipeCount];
+
+    // pipes[pipeIndex++] = new Pipe(
+    //     gameData.pipeWidth,
+    //     gameData.pipeSpacing,
+    //     gameData.pipeSpeed
+    // );
     
-    for (int i = 1; i < gameData.pipeCount; i++) {
-        pipes[i] = nullptr;
-    }
+    // for (int i = 1; i < gameData.pipeCount; i++) {
+    //     pipes[i] = nullptr;
+    // }
 
-    while(1) {
-        gameData.Update();
+    // while(1) {
+    //     gameData.Update();
 
-        if (gameData.programState == 0) {
-            // show_start
-        }
+    //     if (gameData.programState == 0) {
+    //         // show_start
+    //     }
 
-        if (gameData.programState == 1) {
-            BSP_LCD_Clear(LCD_COLOR_GREEN);
+    //     if (gameData.programState == 1) {
+    //         BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-            if (gameData.screenState.touchDetected) {
-                gameData.flappy.Up();
-            }
+    //         if (gameData.screenState.touchDetected) {
+    //             gameData.flappy.Up();
+    //         }
 
-            for(int i = 0; i < gameData.pipeCount; i++) {
-                if (pipes[i] == nullptr) {
-                    continue;
-                }
+    //         for(int i = 0; i < gameData.pipeCount; i++) {
+    //             if (pipes[i] == nullptr) {
+    //                 continue;
+    //             }
 
-                pipes[i]->Draw();
-                pipes[i]->Update();
+    //             pipes[i]->Draw();
+    //             pipes[i]->Update();
 
-                if (pipes[i]->Collides(gameData.flappy)) {
-                    gameData.programState = 2;
-                    pipeIndex = 0;
-                    pipes[pipeIndex++] = new Pipe(
-                        gameData.pipeWidth,
-                        gameData.pipeSpacing,
-                        gameData.pipeSpeed
-                    );
+    //             if (pipes[i]->Collides(gameData.flappy)) {
+    //                 gameData.programState = 2;
+    //                 pipeIndex = 0;
+    //                 pipes[pipeIndex++] = new Pipe(
+    //                     gameData.pipeWidth,
+    //                     gameData.pipeSpacing,
+    //                     gameData.pipeSpeed
+    //                 );
 
-                    for (int i = 1; i < gameData.pipeCount; i++) {
-                        pipes[i] = nullptr;
-                    }
+    //                 for (int i = 1; i < gameData.pipeCount; i++) {
+    //                     pipes[i] = nullptr;
+    //                 }
 
-                    gameData.flappy.Init(
-                        gameData.flappyXPos,
-                        gameData.flappyYPos,
-                        gameData.flappySize,
-                        gameData.gravity,
-                        gameData.lift
-                    );
-                }
-            }
+    //                 gameData.flappy.Init(
+    //                     gameData.flappyXPos,
+    //                     gameData.flappyYPos,
+    //                     gameData.flappySize,
+    //                     gameData.gravity,
+    //                     gameData.lift
+    //                 );
+    //             }
+    //         }
 
-            gameData.flappy.Update();
-            gameData.flappy.Draw();
+    //         gameData.flappy.Update();
+    //         gameData.flappy.Draw();
 
-            if (
-                gameData.frameCount % gameData.pipeSpawnFrame == 0 && gameData.frameCount != 0
-            ) {
-                gameData.gameScore += 1;
+    //         if (
+    //             gameData.frameCount % gameData.pipeSpawnFrame == 0 && gameData.frameCount != 0
+    //         ) {
+    //             gameData.gameScore += 1;
                 
-                pipes[pipeIndex] = new Pipe(
-                    gameData.pipeWidth,
-                    gameData.pipeSpacing,
-                    gameData.pipeSpeed
-                );
+    //             pipes[pipeIndex] = new Pipe(
+    //                 gameData.pipeWidth,
+    //                 gameData.pipeSpacing,
+    //                 gameData.pipeSpeed
+    //             );
 
-                if (pipeIndex < (gameData.pipeCount - 1)) {
-                    pipeIndex++;
-                } else {
-                    pipeIndex = 0;
-                }
-            }
+    //             if (pipeIndex < (gameData.pipeCount - 1)) {
+    //                 pipeIndex++;
+    //             } else {
+    //                 pipeIndex = 0;
+    //             }
+    //         }
 
-            gameData.frameCount++;
-        }
+    //         gameData.frameCount++;
+    //     }
 
-        if (gameData.programState == 2) {
-            gameData.frameCount = 0;
-            gameData.gameScore -= 1;
+    //     if (gameData.programState == 2) {
+    //         gameData.frameCount = 0;
+    //         gameData.gameScore -= 1;
 
-            show_gameover(gameData);
-        }
+    //         show_gameover(gameData);
+    //     }
 
-        HAL_Delay(gameData.frameDelay);
-    }
+    //     HAL_Delay(gameData.frameDelay);
+    // }
 }
 
 

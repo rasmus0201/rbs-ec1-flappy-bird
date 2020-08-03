@@ -1,9 +1,9 @@
 /**
- * @file StartState.h
+ * @file GameOverState.h
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
- * @brief Start state class definitions
+ * @brief Gameover state class definitions
  * @version 0.1
- * @date 2020-08-02
+ * @date 2020-08-03
  * 
  * @copyright Copyright (c) 2020
  * 
@@ -16,10 +16,10 @@
 #include "AbstractGameState.h"
 
 /**
- * @brief Start state - used when starting the game
+ * @brief Game over state - used when user dies
  * 
  */
-class StartState : public AbstractGameState
+class GameOverState : public AbstractGameState
 {
     public:
         void Init(GameEngine *game);
@@ -32,16 +32,16 @@ class StartState : public AbstractGameState
         void Update(GameEngine *game);
         void Draw(GameEngine *game);
 
-        static StartState* Instance()
+        static GameOverState* Instance()
         {
             return &state;
         }
 
     protected:
-        StartState() {}
+        GameOverState() {}
 
     private:
-        static StartState state;
+        static GameOverState state;
         int btnX;
         int btnY;
         int btnWidth;

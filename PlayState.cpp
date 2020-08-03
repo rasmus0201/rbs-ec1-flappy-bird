@@ -14,22 +14,22 @@
 
 PlayState PlayState::state;
 
-void PlayState::Init()
+void PlayState::Init(GameEngine *game)
 {
     printf("PlayState Init\n");
 };
 
-void PlayState::Cleanup()
+void PlayState::Cleanup(GameEngine *game)
 {
     printf("PlayState Cleanup\n");
 };
 
-void PlayState::Pause()
+void PlayState::Pause(GameEngine *game)
 {
     printf("PlayState Pause\n");
 };
 
-void PlayState::Resume()
+void PlayState::Resume(GameEngine *game)
 {
     printf("PlayState Resume\n");
 };

@@ -22,11 +22,11 @@
 class PlayState : public AbstractGameState
 {
     public:
-        void Init();
-        void Cleanup();
+        void Init(GameEngine *game);
+        void Cleanup(GameEngine *game);
 
-        void Pause();
-        void Resume();
+        void Pause(GameEngine *game);
+        void Resume(GameEngine *game);
 
         void HandleEvents(GameEngine *game);
         void Update(GameEngine *game);

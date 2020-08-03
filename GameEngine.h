@@ -15,7 +15,8 @@
 #include "mbed.h"
 #include <vector>
 #include "GameData.h"
-#include "AbstractGameState.h"
+
+class AbstractGameState;
 
 class GameEngine
 {
@@ -30,7 +31,7 @@ class GameEngine
         void Update();
         void Draw();
         bool Running();
-        GameData* GetGameData();
+        GameData GetGameData();
         void Quit();
 
     private:
