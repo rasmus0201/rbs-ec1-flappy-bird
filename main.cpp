@@ -3,8 +3,8 @@
 #include "stm32746g_discovery_ts.h"
 #include "ProgramState.h"
 #include "InteractiveButton.h"
-#include "bird.h"
-#include "pipe.h"
+#include "Bird.h"
+#include "Pipe.h"
 
 #define SCREEN_HEIGHT 272
 #define SCREEN_WIDTH 480

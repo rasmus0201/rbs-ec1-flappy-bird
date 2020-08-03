@@ -1,6 +1,6 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
-#import "bird.h"
+#import "Bird.h"
 
 /**
  * @brief Construct a new Bird:: Bird object
