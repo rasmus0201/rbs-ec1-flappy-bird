@@ -1,63 +1,18 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
-#include "bird.h"
-#include "pipe.h"
+#include "Bird.h"
+#include "Pipe.h"
+#include "GameData.h"
+#include "GameEngine.h"
+#include "StartState.h"
 
 InterruptIn fly_btn(D2);
 DigitalOut builtin_led(LED1);
 
-Bird flappy;
-// int PROGRAM_STATE = 0;
-// int GAME_SCORE = 0;
-
-class ProgramState
+void fly_btn_activator_rise(GameData gameData)
 {
-    public:
-        ProgramState() {
-            BSP_TS_GetState(&this->screenState);
-            
-            this->programState = 0;
-            this->gameScore = 0;
-            this->frameCount = 0;
-            this->frameDelay = 50;
-            this->pipeCount = 16;
-            this->pipeSpawnFrame = 40;
-            this->pipeSpacing = 80;
-            this->pipeSpeed = 5;
-            this->pipeWidth = 40;
-            this->flappyXPos = 160;
-            this->flappyYPos = 136;
-            this->gravity = 0.8;
-            this->lift = -5;
-            this->flappySize = 10;
-        }
-
-        void UpdateScreenState() {
-            BSP_TS_GetState(&this->screenState);
-        }
-    
-    public:
-        int programState;
-        int gameScore;
-        TS_StateTypeDef screenState;
-        int frameCount;
-        int frameDelay;
-        int pipeCount;
-        int pipeSpawnFrame;
-        int pipeSpacing;
-        int pipeSpeed;
-        int pipeWidth;
-        int flappyXPos;
-        int flappyYPos;
-        float gravity;
-        float lift;
-        int flappySize;
-};
-
-void fly_btn_activator_rise()
-{
-    flappy.Up();
+    gameData.flappy.Up();
 }
 
 void init_lcd() {
@@ -85,52 +40,10 @@ unsigned number_of_digits(unsigned i)
     return i > 0 ? (int) log10 ((double) i) + 1 : 1;
 }
 
-void show_start(ProgramState state) {
+void show_gameover(GameData gameData) {
+    uint8_t scoreStr[13 + number_of_digits(gameData.gameScore)];
     BSP_LCD_SetFont(&Font20);
-
-    BSP_LCD_Clear(LCD_COLOR_GREEN);
-    BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, LINE(4), (uint8_t *)"Press play to start", CENTER_MODE);
-
-    BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-    int btnX = int(480/2 - 55);
-    int btnY = int(272/2);
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
-    
-    BSP_LCD_SetFont(&Font16);
-    BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"PLAY", CENTER_MODE);
-
-    BSP_LCD_SetFont(&Font20);
-
-    if (state.screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(state.screenState.touchX[0] > btnX && state.screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-        
-        if (!(state.screenState.touchY[0] > btnY && state.screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            state.programState = 1;
-            state.gameScore = 0;
-        }
-    }
-}
-
-void show_gameover(ProgramState state) {
-    uint8_t scoreStr[13 + number_of_digits(state.gameScore)];
-    BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", state.gameScore);
+    sprintf((char *)scoreStr, "Your score: %d", gameData.gameScore);
 
     BSP_LCD_Clear(LCD_COLOR_RED);
     BSP_LCD_SetBackColor(LCD_COLOR_RED);
@@ -154,20 +67,20 @@ void show_gameover(ProgramState state) {
 
     BSP_LCD_SetFont(&Font20);
 
-    if (state.screenState.touchDetected) {
+    if (gameData.screenState.touchDetected) {
         bool pressed = true;
 
-        if (!(state.screenState.touchX[0] > btnX && state.screenState.touchX[0] < (btnX + btnWidth))) {
+        if (!(gameData.screenState.touchX[0] > btnX && gameData.screenState.touchX[0] < (btnX + btnWidth))) {
             pressed = false;
         }
         
-        if (!(state.screenState.touchY[0] > btnY && state.screenState.touchY[0] < (btnY + btnHeight))) {
+        if (!(gameData.screenState.touchY[0] > btnY && gameData.screenState.touchY[0] < (btnY + btnHeight))) {
             pressed = false;
         }
 
         if (pressed) {
-            state.programState = 1;
-            state.gameScore = 0;
+            gameData.programState = 1;
+            gameData.gameScore = 0;
         }
     }
 }
@@ -184,67 +97,71 @@ int main()
     BSP_LCD_Clear(LCD_COLOR_GREEN);
     BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, LINE(5), (uint8_t *)"Welcome to flappy bird", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(
+        0,
+        LINE(5),
+        (uint8_t *)"Welcome to flappy bird",
+        CENTER_MODE
+    );
     BSP_LCD_SetFont(&Font20);
     HAL_Delay(2000);
-
     BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-    fly_btn.rise(&fly_btn_activator_rise);
+    GameEngine game;
+    GameData gameData;
 
-    ProgramState state;
-
-    // TS_StateTypeDef TS_State;
-    // int FRAME_COUNT = 0;
-    // int FRAME_DELAY = 50;
-    // int PIPE_COUNT = 16;
-    // int PIPE_SPAWN_FRAME = 50;
-    // int PIPE_SPACING = 90;
-    // int PIPE_SPEED = 5;
-    // int PIPE_WIDTH = 40;
-
-    // int FLAPPY_X_POS = 160;
-    // int FLAPPY_Y_POS = 136;
-    // float GRAVITY = 0.7;
-    // float LIFT = -5;
-    // int FLAPPY_SIZE = 10;
-
-    flappy.Init(
-        state.flappyXPos,
-        state.flappyYPos,
-        state.flappySize,
-        state.gravity,
-        state.lift
+    gameData.flappy.Init(
+        gameData.flappyXPos,
+        gameData.flappyYPos,
+        gameData.flappySize,
+        gameData.gravity,
+        gameData.lift
     );
+
+    fly_btn.rise(&fly_btn_activator_rise(gameData));
+
+    game.Init(gameData);
+
+    // Load the start state
+    game.ChangeState(StartState::Instance());
+
+    // Main loop
+    while (game.Running()) {
+        game.HandleEvents();
+        game.Update();
+        game.Draw();
+    }
+
+    game.Cleanup();
 
     int pipeIndex = 0;
-    Pipe *pipes[state.pipeCount];
+    Pipe *pipes[gameData.pipeCount];
 
     pipes[pipeIndex++] = new Pipe(
-        state.pipeWidth,
-        state.pipeSpacing,
-        state.pipeSpeed
+        gameData.pipeWidth,
+        gameData.pipeSpacing,
+        gameData.pipeSpeed
     );
     
-    for (int i = 1; i < state.pipeCount; i++) {
+    for (int i = 1; i < gameData.pipeCount; i++) {
         pipes[i] = nullptr;
     }
 
     while(1) {
-        state.UpdateScreenState();
+        gameData.Update();
 
-        if (state.programState == 0) {
-            show_start(state);
+        if (gameData.programState == 0) {
+            // show_start
         }
 
-        if (state.programState == 1) {
+        if (gameData.programState == 1) {
             BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-            if (state.screenState.touchDetected) {
-                flappy.Up();
+            if (gameData.screenState.touchDetected) {
+                gameData.flappy.Up();
             }
 
-            for(int i = 0; i < state.pipeCount; i++) {
+            for(int i = 0; i < gameData.pipeCount; i++) {
                 if (pipes[i] == nullptr) {
                     continue;
                 }
@@ -252,59 +169,61 @@ int main()
                 pipes[i]->Draw();
                 pipes[i]->Update();
 
-                if (pipes[i]->Collides(flappy)) {
-                    state.programState = 2;
+                if (pipes[i]->Collides(gameData.flappy)) {
+                    gameData.programState = 2;
                     pipeIndex = 0;
                     pipes[pipeIndex++] = new Pipe(
-                        state.pipeWidth,
-                        state.pipeSpacing,
-                        state.pipeSpeed
+                        gameData.pipeWidth,
+                        gameData.pipeSpacing,
+                        gameData.pipeSpeed
                     );
 
-                    for (int i = 1; i < state.pipeCount; i++) {
+                    for (int i = 1; i < gameData.pipeCount; i++) {
                         pipes[i] = nullptr;
                     }
 
-                    flappy.Init(
-                        state.flappyXPos,
-                        state.flappyYPos,
-                        state.flappySize,
-                        state.gravity,
-                        state.lift
+                    gameData.flappy.Init(
+                        gameData.flappyXPos,
+                        gameData.flappyYPos,
+                        gameData.flappySize,
+                        gameData.gravity,
+                        gameData.lift
                     );
                 }
             }
 
-            flappy.Update();
-            flappy.Draw();
+            gameData.flappy.Update();
+            gameData.flappy.Draw();
 
-            if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
-                state.gameScore += 1;
+            if (
+                gameData.frameCount % gameData.pipeSpawnFrame == 0 && gameData.frameCount != 0
+            ) {
+                gameData.gameScore += 1;
                 
                 pipes[pipeIndex] = new Pipe(
-                    state.pipeWidth,
-                    state.pipeSpacing,
-                    state.pipeSpeed
+                    gameData.pipeWidth,
+                    gameData.pipeSpacing,
+                    gameData.pipeSpeed
                 );
 
-                if (pipeIndex < (state.pipeCount - 1)) {
+                if (pipeIndex < (gameData.pipeCount - 1)) {
                     pipeIndex++;
                 } else {
                     pipeIndex = 0;
                 }
             }
 
-            state.frameCount++;
+            gameData.frameCount++;
         }
 
-        if (state.programState == 2) {
-            state.frameCount = 0;
-            state.gameScore -= 1;
+        if (gameData.programState == 2) {
+            gameData.frameCount = 0;
+            gameData.gameScore -= 1;
 
-            show_gameover(state);
+            show_gameover(gameData);
         }
 
-        HAL_Delay(state.frameDelay);
+        HAL_Delay(gameData.frameDelay);
     }
 }
 

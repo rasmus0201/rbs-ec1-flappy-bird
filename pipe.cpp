@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
-#include "bird.h"
-#include "pipe.h"
+#include "Bird.h"
+#include "Pipe.h"
 
 Pipe::Pipe(int width, int spacingHole, int movingSpeed) {
     this->SCREEN_WIDTH = BSP_LCD_GetXSize();

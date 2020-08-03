@@ -13,7 +13,7 @@
 #define PIPE_H
 
 #include "mbed.h"
-#include "bird.h"
+#include "Bird.h"
 
 /**
  * @brief Construct a pipe object to show it on the LCD screen
