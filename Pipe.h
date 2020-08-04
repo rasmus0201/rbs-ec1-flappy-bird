@@ -1,5 +1,5 @@
 /**
- * @file pipe.h
+ * @file Pipe.h
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
  * @brief Definitions of the pipe class
  * @version 0.1
@@ -13,7 +13,7 @@
 #define PIPE_H
 
 #include "mbed.h"
-#include "bird.h"
+#include "Bird.h"
 
 /**
  * @brief Construct a pipe object to show it on the LCD screen

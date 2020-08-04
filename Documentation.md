@@ -8,6 +8,10 @@ Short Description: This program is a game replica of the known "Flappy Bird" ([S
 
 ---
 
+WIP = Work In Progress
+
+---
+
 ## 1. Explanation of chosen solution
 I've chosen to make this game since I thought it would be challenging, fun and creative. I have been VERY optimistic about making all this in the timeline of 5 days. I had set different goals all ready from the start:
 
@@ -22,7 +26,7 @@ I've chosen to make this game since I thought it would be challenging, fun and c
 4. Bug-fixing & improvements:
     - It would be utopia if I got to this point without having any problems/bugs, so any bugs should be fixed ASAP, if possible. A long with bugs therew would probably also be some stuff which could be improved.
 5. Extend functionality while continue to improve and bug-fix:
-    - Adding more sensors/peripherals - button to make the bird fly, temperatur sensor to control "theme".
+    - Adding more sensors/peripherals - button to make the bird fly, temperatur sensor to control "theme", leds, buzzer, etc.
     - Score - should be attached to how long the user gets.
 
 ## 2. Game features
@@ -39,11 +43,11 @@ Theme (background color and fill color) change when the room temperature rises (
    - It is Built-on
 - Grove Button:
    - D2
-- Grove LED:
+- Grove LED (WIP):
    - D3
-- Grove Buzzer:
+- Grove Buzzer (WIP):
    - D4
-- Grove Temperature Sensor:
+- Grove Temperature Sensor (WIP):
    - A0
 
 ## 4. How the peripherals are used

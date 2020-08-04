@@ -1,57 +1,18 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
-#include "bird.h"
-#include "pipe.h"
+#include "ProgramState.h"
+#include "InteractiveButton.h"
+#include "Bird.h"
+#include "Pipe.h"
 
-InterruptIn fly_btn(D2);
-DigitalOut builtin_led(LED1);
+#define SCREEN_HEIGHT 272
+#define SCREEN_WIDTH 480
+
+InterruptIn flyBtn(D2);
+DigitalOut led(D3);
 
 Bird flappy;
-
-class ProgramState
-{
-    public:
-        ProgramState() {
-            BSP_TS_GetState(&this->screenState);
-            
-            this->programState = 0;
-            this->gameScore = 0;
-            this->frameCount = 0;
-            this->frameDelay = 50;
-            this->pipeCount = 16;
-            this->pipeSpawnFrame = 40;
-            this->pipeSpacing = 80;
-            this->pipeSpeed = 5;
-            this->pipeWidth = 40;
-            this->flappyXPos = 160;
-            this->flappyYPos = 136;
-            this->gravity = 0.8;
-            this->lift = -5;
-            this->flappySize = 10;
-        }
-
-        void UpdateScreenState() {
-            BSP_TS_GetState(&this->screenState);
-        }
-    
-    public:
-        int programState;
-        int gameScore;
-        TS_StateTypeDef screenState;
-        int frameCount;
-        int frameDelay;
-        int pipeCount;
-        int pipeSpawnFrame;
-        int pipeSpacing;
-        int pipeSpeed;
-        int pipeWidth;
-        int flappyXPos;
-        int flappyYPos;
-        float gravity;
-        float lift;
-        int flappySize;
-};
 
 void fly_btn_activator_rise()
 {
@@ -85,7 +46,7 @@ unsigned number_of_digits(unsigned i)
     return i > 0 ? (int) log10 ((double) i) + 1 : 1;
 }
 
-void show_start(ProgramState *state)
+void show_start(ProgramState *state, InteractiveButton btn)
 {
     BSP_LCD_SetFont(&Font20);
 
@@ -97,42 +58,24 @@ void show_start(ProgramState *state)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-    int btnX = int(480/2 - 55);
-    int btnY = int(272/2);
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
+    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"PLAY", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"PLAY", CENTER_MODE);
 
     BSP_LCD_SetFont(&Font20);
-
-    if (state->screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-
-        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            state->programState = 1;
-            state->gameScore = 0;
-        }
-    }
 }
 
-void show_gameover(ProgramState *state)
+
+void show_gameover(ProgramState *state, InteractiveButton btn)
 {
-    uint8_t scoreStr[13 + number_of_digits(state->gameScore - 1)];
+    int score = state->gameScore;
+    
+    uint8_t scoreStr[13 + number_of_digits(score)];
     BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", state->gameScore - 1);
+    sprintf((char *)scoreStr, "Your score: %d", score);
 
     BSP_LCD_Clear(LCD_COLOR_RED);
     BSP_LCD_SetBackColor(LCD_COLOR_RED);
@@ -143,45 +86,27 @@ void show_gameover(ProgramState *state)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-    int btnX = int(480/2 - 55); // 185 - 285
-    int btnY = int(272/2); // 136 - 186
-    int btnWidth = 100;
-    int btnHeight = 50;
-    BSP_LCD_FillRect(btnX, btnY, btnWidth, btnHeight);
+    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btnY + 16, (uint8_t *)"RESTART", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"RESTART", CENTER_MODE);
 
     BSP_LCD_SetFont(&Font20);
-
-    if (state->screenState.touchDetected) {
-        bool pressed = true;
-
-        if (!(state->screenState.touchX[0] > btnX && state->screenState.touchX[0] < (btnX + btnWidth))) {
-            pressed = false;
-        }
-        
-        if (!(state->screenState.touchY[0] > btnY && state->screenState.touchY[0] < (btnY + btnHeight))) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            state->programState = 1;
-            state->gameScore = 0;
-        }
-    }
 }
 
 int main()
 {
     srand(time(NULL));
+
     init_lcd();
 
     if (!init_touch()) {
         exit(-1);
     }
+
+    led.write(0);
 
     BSP_LCD_Clear(LCD_COLOR_GREEN);
     BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
@@ -192,7 +117,7 @@ int main()
 
     BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-    fly_btn.rise(&fly_btn_activator_rise);
+    flyBtn.rise(&fly_btn_activator_rise);
 
     ProgramState state;
 
@@ -217,17 +142,47 @@ int main()
         pipes[i] = nullptr;
     }
 
-    while(1) {
-        state.UpdateScreenState();
+    InteractiveButton startBtn(
+        int(SCREEN_WIDTH/2 - 55),
+        int(SCREEN_HEIGHT/2),
+        100,
+        50
+    );
 
+    InteractiveButton restartBtn(
+        int(SCREEN_WIDTH/2 - 55),
+        int(SCREEN_HEIGHT/2),
+        100,
+        50
+    );
+
+    TS_StateTypeDef screenState;
+
+    while(1) {
+        BSP_TS_GetState(&screenState);
+        
+        // START STATE
         if (state.programState == 0) {
-            show_start(&state);
+            if (state.stateChanged) {
+                show_start(&state, startBtn);
+
+                state.stateChanged = false;
+            }
+
+            if (startBtn.IsPressed()) {
+                state.programState = 1;
+                state.gameScore = 0;
+
+                state.stateChanged = true;
+            }
         }
 
+        // PLAY STATE
         if (state.programState == 1) {
             BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-            if (state.screenState.touchDetected) {
+            // Lift the bird if there is a touch on screen
+            if (screenState.touchDetected) {
                 flappy.Up();
             }
 
@@ -239,8 +194,13 @@ int main()
                 pipes[i]->Draw();
                 pipes[i]->Update();
 
+                // Check if the bird hit the pipe
                 if (pipes[i]->Collides(flappy)) {
                     state.programState = 2;
+                    state.frameCount = 0;
+                    state.stateChanged = true;
+                    state.gameScore--; // They did not get through, so to compensate for the follwing ++ we decrement here
+                    
                     pipeIndex = 0;
                     pipes[pipeIndex++] = new Pipe(
                         state.pipeWidth,
@@ -260,13 +220,42 @@ int main()
                         state.lift
                     );
 
-                    state.frameCount = 0;
+                    led.write(1);
                 }
+            }
+            
+            // Game-over if bird is below screen
+            if ((flappy.GetY() + flappy.GetSize()) >= SCREEN_HEIGHT) {
+                state.programState = 2;
+                state.frameCount = 0;
+                state.stateChanged = true;
+                
+                pipeIndex = 0;
+                pipes[pipeIndex++] = new Pipe(
+                    state.pipeWidth,
+                    state.pipeSpacing,
+                    state.pipeSpeed
+                );
+
+                for (int i = 1; i < state.pipeCount; i++) {
+                    pipes[i] = nullptr;
+                }
+
+                flappy.Init(
+                    state.flappyXPos,
+                    state.flappyYPos,
+                    state.flappySize,
+                    state.gravity,
+                    state.lift
+                );
+
+                led.write(1);
             }
 
             flappy.Update();
             flappy.Draw();
 
+            // Add more pipes every x frames
             if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
                 state.gameScore += 1;
                 
@@ -286,12 +275,23 @@ int main()
             state.frameCount++;
         }
 
+        // GAMEOVER STATE
         if (state.programState == 2) {
-            show_gameover(&state);
+            if (state.stateChanged) {
+                show_gameover(&state, restartBtn);
+
+                state.stateChanged = false;
+            }
+
+            if (restartBtn.IsPressed()) {
+                state.programState = 1;
+                state.gameScore = 0;
+
+                state.stateChanged = true;
+                led.write(0);
+            }
         }
 
         HAL_Delay(state.frameDelay);
     }
 }
-
-
