@@ -2,10 +2,23 @@
 #include "stm32746g_discovery_lcd.h"
 #import "Bird.h"
 
+/**
+ * @brief Construct a new Bird:: Bird object
+ * 
+ */
 Bird::Bird() {
     this->velocity = 0;
-}
+};
 
+/**
+ * @brief Initialize the bird object
+ * 
+ * @param xPos 
+ * @param yPos 
+ * @param size 
+ * @param gravity 
+ * @param lift 
+ */
 void Bird::Init(int xPos, int yPos, int size, float gravity, float lift) {
     this->x = xPos;
     this->y = yPos;
@@ -17,22 +30,45 @@ void Bird::Init(int xPos, int yPos, int size, float gravity, float lift) {
     this->SCREEN_HEIGHT = BSP_LCD_GetYSize();
 };
 
+/**
+ * @brief Get x-position
+ * 
+ * @return int 
+ */
 int Bird::GetX() {
     return this->x;
 };
 
+/**
+ * @brief Get y-position
+ * 
+ * @return int 
+ */
 int Bird::GetY() {
     return this->y;
 };
 
+/**
+ * @brief Get size (width/height)
+ * 
+ * @return int 
+ */
 int Bird::GetSize() {
     return this->size;
 };
 
+/**
+ * @brief Make the bird fly (add lift)
+ * 
+ */
 void Bird::Up() {
     this->velocity += this->l;
 };
 
+/**
+ * @brief Update the bird - this does the basic physics
+ * 
+ */
 void Bird::Update() {
     this->velocity += this->g;
     this->y += int(this->velocity);
@@ -48,6 +84,10 @@ void Bird::Update() {
     }
 };
 
+/**
+ * @brief Draw the bird to the LCD screen
+ * 
+ */
 void Bird::Draw() {
     uint32_t prevColor = BSP_LCD_GetBackColor();
     BSP_LCD_SetBackColor(LCD_COLOR_WHITE);

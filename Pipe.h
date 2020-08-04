@@ -1,5 +1,5 @@
 /**
- * @file pipe.h
+ * @file Pipe.h
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
  * @brief Definitions of the pipe class
  * @version 0.1
@@ -43,12 +43,26 @@ class Pipe
         bool Collides(Bird r);
 
         /**
-         * @brief 
+         * @brief Check if the pipe is not on the screen
          * 
          * @return true 
          * @return false 
          */
         bool OffScreen();
+
+        /**
+         * @brief Get the x-position
+         * 
+         * @return int
+         */
+        int GetX();
+
+        /**
+         * @brief Get the width
+         * 
+         * @return int
+         */
+        int GetWidth();
 
         /**
          * @brief Used for every frame update

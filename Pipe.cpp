@@ -3,7 +3,15 @@
 #include "Bird.h"
 #include "Pipe.h"
 
-Pipe::Pipe(int width, int spacingHole, int movingSpeed) {
+/**
+ * @brief Construct a new Pipe:: Pipe object
+ * 
+ * @param width 
+ * @param spacingHole 
+ * @param movingSpeed 
+ */
+Pipe::Pipe(int width, int spacingHole, int movingSpeed)
+{
     this->SCREEN_WIDTH = BSP_LCD_GetXSize();
     this->SCREEN_HEIGHT = BSP_LCD_GetYSize();
     this->EDGE_THRESHOLD = 20;
@@ -27,22 +35,34 @@ Pipe::Pipe(int width, int spacingHole, int movingSpeed) {
 
     // Height of the bottom pipe, Gets drawn from yPos: SCREEN_HEIGHT - bottom
     this->bottom = this->SCREEN_HEIGHT - (this->top + this->spacing);
-}
+};
 
-bool Pipe::Collides(Bird r) {
+/**
+ * @brief Check if bird hit pipe
+ * 
+ * @param r 
+ * @return true 
+ * @return false 
+ */
+bool Pipe::Collides(Bird r)
+{
     if (r.GetY() < top || r.GetY() > (this->SCREEN_HEIGHT - this->bottom)) {
         if (r.GetX() > this->x && r.GetX() < this->x + this->w) {
-            this->color = LCD_COLOR_RED;
             return true;
         }
     }
 
-    this->color = LCD_COLOR_WHITE;
-
     return false;
-}
+};
 
-bool Pipe::OffScreen() {
+/**
+ * @brief Calculates if the pipe is off the screen (either to the left or right)
+ * 
+ * @return true 
+ * @return false 
+ */
+bool Pipe::OffScreen()
+{
     // The screen can't halfy print stuff
     // This will return true if some of the rect is outside the screen
 
@@ -57,13 +77,41 @@ bool Pipe::OffScreen() {
     }
 
     return false;
-}
+};
 
-void Pipe::Update() {
+/**
+ * @brief Gets the x-position of the pipe
+ * 
+ */
+int Pipe::GetX()
+{
+    return this->x;
+};
+
+/**
+ * @brief Gets the width of the pipe
+ * 
+ */
+int Pipe::GetWidth()
+{
+    return this->w;
+};
+
+/**
+ * @brief Update - updates physics (moves pipe to the left)
+ * 
+ */
+void Pipe::Update()
+{
     this->x -= this->speed;
-}
+};
 
-void Pipe::Draw() {
+/**
+ * @brief Draw the pipe to the screen
+ * 
+ */
+void Pipe::Draw()
+{
     if (OffScreen()) {
         return;
     }
@@ -77,4 +125,4 @@ void Pipe::Draw() {
 
     // Restore back color
     BSP_LCD_SetBackColor(prevColor);
-}
+};

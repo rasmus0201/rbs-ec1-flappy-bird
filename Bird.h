@@ -1,5 +1,5 @@
 /**
- * @file bird.h
+ * @file Bird.h
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
  * @brief Definitions of the bird class
  * @version 0.1

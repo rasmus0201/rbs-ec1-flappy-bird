@@ -8,12 +8,11 @@ class GameData
 {
     public:
         GameData();
-        void Update();
 
     public:
         int programState;
+        bool stateChanged;
         int gameScore;
-        TS_StateTypeDef screenState;
         int frameCount;
         int frameDelay;
         int pipeCount;

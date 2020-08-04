@@ -1,8 +1,21 @@
-#include "stm32746g_discovery_ts.h"
-#include "GameData.h"
-#include "Bird.h"
+/**
+ * @file ProgramState.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Code for class
+ * @version 0.1
+ * @date 2020-08-03
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 
-GameData::GameData()
+#include "ProgramState.h"
+
+/**
+ * @brief Construct a new Program State:: Program State object
+ *
+ */
+ProgramState::ProgramState()
 {
     this->programState = 0;
     this->stateChanged = true;
@@ -19,7 +32,4 @@ GameData::GameData()
     this->gravity = 0.8;
     this->lift = -5;
     this->flappySize = 10;
-
-    this->flappy = Bird();
 };
-
