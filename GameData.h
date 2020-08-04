@@ -28,12 +28,9 @@ class GameData
         GameData();
 
     public:
-        int programState;
-        bool stateChanged;
         int gameScore;
         int frameCount;
         int frameDelay;
-        int pipeCount;
         int pipeSpawnFrame;
         int pipeSpacing;
         int pipeSpeed;
