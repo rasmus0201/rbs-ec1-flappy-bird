@@ -43,7 +43,7 @@ Theme (background color and fill color) change when the room temperature rises (
    - It is Built-on
 - Grove Button:
    - D2
-- Grove LED (WIP):
+- Grove LED:
    - D3
 - Grove Buzzer (WIP):
    - D4
@@ -54,7 +54,7 @@ Theme (background color and fill color) change when the room temperature rises (
 - LCD/Touch screen:
    - Display used for showing:
       - Boot screen
-      - Start screen (**upcoming**)
+      - Start screen
       - Game (moving bird and pipes)
       - Gameover screen (also restart game)
    - Touch:
@@ -62,7 +62,8 @@ Theme (background color and fill color) change when the room temperature rises (
 - Button (InterruptIn rise):
    - If pressed the bird flies once.
 - LED:
-   - Lights up when the bird got an upwards lift (user pressed button or touch screen)
+   - <s>Lights up when the bird got an upwards lift (user pressed button or touch screen)</s>
+   - Lights up when the bird dies.
 - Buzzer (DigitalOut):
    - Buzzes when user dies
 - Temperature sensor:
@@ -75,12 +76,13 @@ The program compiles with ARMC6, but it could probably also work with GCC_ARM
 I use the `printf()` function to communicate to serial. I use Mbed Studio and the cli-version to connect to serial (command: `mbed sterm` to connect via the Terminal)
 
 ## 7. Scheduled changes
-- Implement the LED functionality
 - Implement the buzzer functionality
-- Fix the screen craziness issues 
+- Change LED functionality 
+- Fix the screen craziness issues
 
 ## 8. Known problems / bugs
 - The screens is going crazy and you can't really see anything
+- Pipes are flickering
 
 ## 9. Future development/extension of the project
 * Make theming:
