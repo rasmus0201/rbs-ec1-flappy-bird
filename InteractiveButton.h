@@ -21,6 +21,12 @@ class InteractiveButton
     public:
         /**
          * @brief Construct a new Interactive Button object
+         *
+         */
+        InteractiveButton();
+        
+        /**
+         * @brief Construct a new Interactive Button object
          * 
          * @param xPos 
          * @param yPos 

@@ -1,37 +1,36 @@
 /**
- * @file ProgramState.h
+ * @file GameData.h
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
- * @brief Class definitions for ProgramState
+ * @brief Game data definitions
  * @version 0.1
- * @date 2020-08-03
+ * @date 2020-08-04
  * 
  * @copyright Copyright (c) 2020
  * 
  */
 
-#ifndef PROGRAM_STATE_H
-#define PROGRAM_STATE_H
+#ifndef GAME_DATA_H
+#define GAME_DATA_H
+
+#include "stm32746g_discovery_ts.h"
 
 /**
- * @brief Class to hold different set of values used across the program
+ * @brief data to make the states sync
  * 
  */
-class ProgramState
+class GameData
 {
     public:
         /**
-         * @brief Construct a new Program State object
+         * @brief Construct a new Game Data object
          * 
          */
-        ProgramState();
-    
+        GameData();
+
     public:
-        int programState;
-        bool stateChanged;
         int gameScore;
         int frameCount;
         int frameDelay;
-        int pipeCount;
         int pipeSpawnFrame;
         int pipeSpacing;
         int pipeSpeed;

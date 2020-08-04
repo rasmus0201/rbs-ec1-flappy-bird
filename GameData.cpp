@@ -1,28 +1,26 @@
 /**
- * @file ProgramState.cpp
+ * @file GameData.cpp
  * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
- * @brief Code for class
+ * @brief Game data implementation
  * @version 0.1
- * @date 2020-08-03
+ * @date 2020-08-04
  * 
  * @copyright Copyright (c) 2020
  * 
  */
 
-#include "ProgramState.h"
+#include "stm32746g_discovery_ts.h"
+#include "GameData.h"
 
 /**
- * @brief Construct a new Program State:: Program State object
- *
+ * @brief Construct a new Game Data:: Game Data object
+ * 
  */
-ProgramState::ProgramState()
+GameData::GameData()
 {
-    this->programState = 0;
-    this->stateChanged = true;
     this->gameScore = 0;
     this->frameCount = 0;
     this->frameDelay = 50;
-    this->pipeCount = 16;
     this->pipeSpawnFrame = 40;
     this->pipeSpacing = 80;
     this->pipeSpeed = 5;

@@ -1,6 +1,18 @@
+/**
+ * @file Bird.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Bird class implementation
+ * @version 0.1
+ * @date 2020-08-04
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
-#import "Bird.h"
+#include "Globals.h"
+#include "Bird.h"
 
 /**
  * @brief Construct a new Bird:: Bird object
@@ -27,7 +39,6 @@ void Bird::Init(int xPos, int yPos, int size, float gravity, float lift) {
     this->l = lift;
     
     this->velocity = 0;
-    this->SCREEN_HEIGHT = BSP_LCD_GetYSize();
 };
 
 /**
@@ -73,8 +84,8 @@ void Bird::Update() {
     this->velocity += this->g;
     this->y += int(this->velocity);
 
-    if (this->y > (this->SCREEN_HEIGHT - this->size)) {
-        this->y = (this->SCREEN_HEIGHT - this->size);
+    if (this->y > (SCREEN_HEIGHT - this->size)) {
+        this->y = (SCREEN_HEIGHT - this->size);
         this->velocity = 0;
     }
 
