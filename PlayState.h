@@ -24,24 +24,62 @@
 class PlayState : public AbstractGameState
 {
     public:
+        /**
+         * @inheritdoc
+         */
         void Init(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Cleanup(GameEngine *game);
 
+        /**
+         * @inheritdoc
+         */
         void Pause(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Resume(GameEngine *game);
 
+        /**
+         * @inheritdoc
+         */
         void HandleEvents(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Update(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Draw(GameEngine *game);
 
+        /**
+         * @brief Callback for peripheral button 
+         * 
+         */
         void FlyButtonCallback();
 
+        /**
+         * @brief Get the instance of singleton
+         * 
+         * @return PlayState* 
+         */
         static PlayState* Instance()
         {
             return &state;
         }
 
     protected:
+        /**
+         * @brief Make singleton object
+         * 
+         */
         PlayState() {}
 
     private:

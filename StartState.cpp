@@ -18,6 +18,11 @@
 
 StartState StartState::state;
 
+/**
+ * @brief Initialize the start state
+ * 
+ * @param game 
+ */
 void StartState::Init(GameEngine *game)
 {
     this->button = InteractiveButton(
@@ -52,21 +57,44 @@ void StartState::Init(GameEngine *game)
     BSP_LCD_SetFont(&Font20);
 };
 
+/**
+ * @brief Cleanup
+ * 
+ * @param game 
+ */
 void StartState::Cleanup(GameEngine *game)
 {
     printf("StartState Cleanup\n");
 };
 
+
+/**
+ * @brief Pause
+ * 
+ * @param game 
+ */
 void StartState::Pause(GameEngine *game)
 {
     printf("StartState Pause\n");
 };
 
+
+/**
+ * @brief Resume
+ * 
+ * @param game 
+ */
 void StartState::Resume(GameEngine *game)
 {
     printf("StartState Resume\n");
 };
 
+
+/**
+ * @brief Handle button events
+ * 
+ * @param game 
+ */
 void StartState::HandleEvents(GameEngine *game)
 {
     if (this->button.IsPressed()) {   
@@ -74,11 +102,22 @@ void StartState::HandleEvents(GameEngine *game)
     }
 };
 
+
+/**
+ * @brief Update
+ * 
+ * @param game 
+ */
 void StartState::Update(GameEngine *game)
 {
 
 };
 
+/**
+ * @brief Draw
+ * 
+ * @param game 
+ */
 void StartState::Draw(GameEngine *game)
 {
 

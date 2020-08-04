@@ -21,17 +21,76 @@ class AbstractGameState;
 class GameEngine
 {
     public:
+        /**
+         * @brief Init game engine with data object pointer
+         * 
+         * @param gameData 
+         */
         void Init(GameData* gameData);
+
+        /**
+         * @brief Cleanup
+         * 
+         */
         void Cleanup();
 
+        /**
+         * @brief Change state
+         * 
+         * @param state 
+         */
         void ChangeState(AbstractGameState *state);
+
+        /**
+         * @brief Push state
+         * 
+         * @param state 
+         */
         void PushState(AbstractGameState *state);
+
+        /**
+         * @brief Pop state
+         * 
+         */
         void PopState();
+
+        /**
+         * @brief Handle events
+         * 
+         */
         void HandleEvents();
+
+        /**
+         * @brief Handle updates
+         * 
+         */
         void Update();
+
+        /**
+         * @brief Draw to display
+         * 
+         */
         void Draw();
+
+        /**
+         * @brief Check the status (if it is running)
+         * 
+         * @return true 
+         * @return false 
+         */
         bool Running();
+
+        /**
+         * @brief Get the Game Data object (pointer)
+         * 
+         * @return GameData* 
+         */
         GameData* GetGameData();
+
+        /**
+         * @brief Quit the engine
+         * 
+         */
         void Quit();
 
     private:

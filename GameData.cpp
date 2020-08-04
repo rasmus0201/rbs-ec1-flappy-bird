@@ -1,6 +1,21 @@
+/**
+ * @file GameData.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Game data implementation
+ * @version 0.1
+ * @date 2020-08-04
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include "stm32746g_discovery_ts.h"
 #include "GameData.h"
 
+/**
+ * @brief Construct a new Game Data:: Game Data object
+ * 
+ */
 GameData::GameData()
 {
     this->programState = 0;
@@ -19,4 +34,3 @@ GameData::GameData()
     this->lift = -5;
     this->flappySize = 10;
 };
-

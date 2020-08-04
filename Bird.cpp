@@ -1,3 +1,14 @@
+/**
+ * @file Bird.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Bird class implementation
+ * @version 0.1
+ * @date 2020-08-04
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "Globals.h"

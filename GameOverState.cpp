@@ -18,6 +18,12 @@
 #include "PlayState.h"
 #include "GameOverState.h"
 
+/**
+ * @brief Helper - get the number of digits in an integer
+ * 
+ * @param i 
+ * @return unsigned
+ */
 unsigned number_of_digits(unsigned i)
 {
     return i > 0 ? (int) log10 ((double) i) + 1 : 1;
@@ -25,6 +31,11 @@ unsigned number_of_digits(unsigned i)
 
 GameOverState GameOverState::state;
 
+/**
+ * @brief Init gameover
+ * 
+ * @param game 
+ */
 void GameOverState::Init(GameEngine *game)
 {
     this->button = InteractiveButton(
@@ -59,21 +70,42 @@ void GameOverState::Init(GameEngine *game)
     BSP_LCD_SetFont(&Font20);
 };
 
+/**
+ * @brief Cleanup
+ * 
+ * @param game 
+ */
 void GameOverState::Cleanup(GameEngine *game)
 {
     Globals::LED.write(0);
 };
 
+
+/**
+ * @brief Pause
+ * 
+ * @param game 
+ */
 void GameOverState::Pause(GameEngine *game)
 {
     printf("GameOverState Pause\n");
 };
 
+/**
+ * @brief Resume
+ * 
+ * @param game 
+ */
 void GameOverState::Resume(GameEngine *game)
 {
     printf("GameOverState Resume\n");
 };
 
+/**
+ * @brief Handle events
+ * 
+ * @param game 
+ */
 void GameOverState::HandleEvents(GameEngine *game)
 {    
     if (this->button.IsPressed()) {
@@ -84,11 +116,21 @@ void GameOverState::HandleEvents(GameEngine *game)
     }
 };
 
+/**
+ * @brief Update
+ * 
+ * @param game 
+ */
 void GameOverState::Update(GameEngine *game)
 {
 
 };
 
+/**
+ * @brief Draw
+ * 
+ * @param game 
+ */
 void GameOverState::Draw(GameEngine *game)
 {
 

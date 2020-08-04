@@ -23,22 +23,56 @@
 class GameOverState : public AbstractGameState
 {
     public:
+        /**
+         * @inheritdoc
+         */
         void Init(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Cleanup(GameEngine *game);
 
+        /**
+         * @inheritdoc
+         */
         void Pause(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Resume(GameEngine *game);
 
+        /**
+         * @inheritdoc
+         */
         void HandleEvents(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Update(GameEngine *game);
+
+        /**
+         * @inheritdoc
+         */
         void Draw(GameEngine *game);
 
+        /**
+         * @brief Get the instance of singleton
+         * 
+         * @return GameOverState* 
+         */
         static GameOverState* Instance()
         {
             return &state;
         }
 
     protected:
+        /**
+         * @brief Make singleton object
+         * 
+         */
         GameOverState() {}
 
     private:

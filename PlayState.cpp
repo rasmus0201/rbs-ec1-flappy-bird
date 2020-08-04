@@ -18,6 +18,11 @@
 
 PlayState PlayState::state;
 
+/**
+ * @brief Init playing state
+ * 
+ * @param game 
+ */
 void PlayState::Init(GameEngine *game)
 {
     Globals::FLY_BUTTON.rise(callback(this, &PlayState::FlyButtonCallback));
@@ -41,6 +46,11 @@ void PlayState::Init(GameEngine *game)
     BSP_LCD_Clear(LCD_COLOR_GREEN);
 };
 
+/**
+ * @brief Cleanup
+ * 
+ * @param game 
+ */
 void PlayState::Cleanup(GameEngine *game)
 {
     printf("PlayState Cleanup\n");
@@ -51,21 +61,40 @@ void PlayState::Cleanup(GameEngine *game)
     gameData->frameCount = 0;
 };
 
+/**
+ * @brief Pause
+ * 
+ * @param game 
+ */
 void PlayState::Pause(GameEngine *game)
 {
     printf("PlayState Pause\n");
 };
 
+/**
+ * @brief Resume
+ * 
+ * @param game 
+ */
 void PlayState::Resume(GameEngine *game)
 {
     printf("PlayState Resume\n");
 };
 
+/**
+ * @brief Callback for button
+ * 
+ */
 void PlayState::FlyButtonCallback()
 {
     this->flappy.Up();
 }
 
+/**
+ * @brief Handle button + touch display events
+ * 
+ * @param game 
+ */
 void PlayState::HandleEvents(GameEngine *game)
 {
     TS_StateTypeDef touchState;
@@ -77,6 +106,11 @@ void PlayState::HandleEvents(GameEngine *game)
     }
 };
 
+/**
+ * @brief Update bird + pipes
+ * 
+ * @param game 
+ */
 void PlayState::Update(GameEngine *game)
 {
     GameData* gameData = game->GetGameData();
@@ -117,6 +151,11 @@ void PlayState::Update(GameEngine *game)
     this->flappy.Update();
 };
 
+/**
+ * @brief Draw bird + pipes
+ * 
+ * @param game 
+ */
 void PlayState::Draw(GameEngine *game)
 {
     GameData* gameData = game->GetGameData();

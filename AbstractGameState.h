@@ -25,19 +25,68 @@ class GameEngine;
 class AbstractGameState
 {
     public:
+        /**
+         * @brief Init the state
+         * 
+         * @param game 
+         */
         virtual void Init(GameEngine *game) = 0;
+        
+        /**
+         * @brief Cleanup the state
+         * 
+         * @param game 
+         */
         virtual void Cleanup(GameEngine *game) = 0;
 
+        /**
+         * @brief Pause a state
+         * 
+         * @param game 
+         */
         virtual void Pause(GameEngine *game) = 0;
+        
+        /**
+         * @brief Resume a state
+         * 
+         * @param game 
+         */
         virtual void Resume(GameEngine *game) = 0;
 
+        /**
+         * @brief Handle any events
+         * 
+         * @param game 
+         */
         virtual void HandleEvents(GameEngine *game) = 0;
+       
+        /**
+         * @brief Update the state
+         * 
+         * @param game 
+         */
         virtual void Update(GameEngine *game) = 0;
+        
+        /**
+         * @brief Draw the state
+         * 
+         * @param game 
+         */
         virtual void Draw(GameEngine *game) = 0;
 
+        /**
+         * @brief Change state to another state
+         * 
+         * @param game 
+         * @param state 
+         */
         void ChangeState(GameEngine *game, AbstractGameState *state);
 
     protected:
+        /**
+         * @brief Construct a new Abstract Game State object
+         * 
+         */
         AbstractGameState() {}
 };
 

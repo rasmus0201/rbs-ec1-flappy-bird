@@ -1,3 +1,14 @@
+/**
+ * @file main.cpp
+ * @author Rasmus Sørensen (bundsgaard.rasmus@gmail.com)
+ * @brief Main
+ * @version 0.1
+ * @date 2020-08-04
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
+
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
@@ -32,63 +43,6 @@ bool init_touch()
 
     return true;
 }
-
-/*
-unsigned number_of_digits(unsigned i)
-{
-    return i > 0 ? (int) log10 ((double) i) + 1 : 1;
-}
-
-void show_start(ProgramState *state, InteractiveButton btn)
-{
-    BSP_LCD_SetFont(&Font20);
-
-    BSP_LCD_Clear(LCD_COLOR_GREEN);
-    BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, LINE(4), (uint8_t *)"Press play to start", CENTER_MODE);
-
-    BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
-    
-    BSP_LCD_SetFont(&Font16);
-    BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"PLAY", CENTER_MODE);
-
-    BSP_LCD_SetFont(&Font20);
-}
-
-
-void show_gameover(ProgramState *state, InteractiveButton btn)
-{
-    int score = state->gameScore;
-    
-    uint8_t scoreStr[13 + number_of_digits(score)];
-    BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", score);
-
-    BSP_LCD_Clear(LCD_COLOR_RED);
-    BSP_LCD_SetBackColor(LCD_COLOR_RED);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, LINE(3), (uint8_t *)"GAMEOVER", CENTER_MODE);
-    BSP_LCD_DisplayStringAt(0, LINE(4), (uint8_t *)scoreStr, CENTER_MODE);
-
-    BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
-    BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-    BSP_LCD_FillRect(btn.GetX(), btn.GetY(), btn.GetWidth(), btn.GetHeight());
-    
-    BSP_LCD_SetFont(&Font16);
-    BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
-    BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, btn.GetY() + 16, (uint8_t *)"RESTART", CENTER_MODE);
-
-    BSP_LCD_SetFont(&Font20);
-}
-*/
 
 int main()
 {
