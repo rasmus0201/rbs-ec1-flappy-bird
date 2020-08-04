@@ -84,7 +84,6 @@ class Bird
         float g;
         float l;
         float velocity;
-        int SCREEN_HEIGHT;
 };
 
 #endif

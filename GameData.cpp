@@ -1,6 +1,5 @@
 #include "stm32746g_discovery_ts.h"
 #include "GameData.h"
-#include "Bird.h"
 
 GameData::GameData()
 {
@@ -19,9 +18,5 @@ GameData::GameData()
     this->gravity = 0.8;
     this->lift = -5;
     this->flappySize = 10;
-
-    Bird bird = Bird();
-
-    this->flappy = &bird;
 };
 

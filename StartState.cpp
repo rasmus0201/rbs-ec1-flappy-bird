@@ -20,8 +20,6 @@ StartState StartState::state;
 
 void StartState::Init(GameEngine *game)
 {
-    printf("StartState Init\n");
-
     this->button = InteractiveButton(
         int(480 / 2 - 55),
         int(272 / 2),
@@ -71,9 +69,7 @@ void StartState::Resume(GameEngine *game)
 
 void StartState::HandleEvents(GameEngine *game)
 {
-    if (this->button.IsPressed()) {
-        printf("Button was pressed");
-        
+    if (this->button.IsPressed()) {   
         game->ChangeState(PlayState::Instance());
     }
 };

@@ -14,6 +14,7 @@
 
 #include "GameEngine.h"
 #include "AbstractGameState.h"
+#include "InteractiveButton.h"
 
 /**
  * @brief Game over state - used when user dies
@@ -42,10 +43,7 @@ class GameOverState : public AbstractGameState
 
     private:
         static GameOverState state;
-        int btnX;
-        int btnY;
-        int btnWidth;
-        int btnHeight;
+        InteractiveButton button;
 };
 
 #endif

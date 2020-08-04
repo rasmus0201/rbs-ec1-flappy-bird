@@ -84,8 +84,6 @@ class Pipe
         int x;
         int w;
         uint32_t color;
-        int SCREEN_HEIGHT;
-        int SCREEN_WIDTH;
         int EDGE_THRESHOLD;
 };
 

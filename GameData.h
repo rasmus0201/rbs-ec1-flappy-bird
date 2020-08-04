@@ -2,7 +2,6 @@
 #define GAME_DATA_H
 
 #include "stm32746g_discovery_ts.h"
-#include "Bird.h"
 
 class GameData
 {
@@ -25,8 +24,6 @@ class GameData
         float gravity;
         float lift;
         int flappySize;
-
-        Bird* flappy;
 };
 
 #endif

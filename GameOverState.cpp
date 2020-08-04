@@ -12,8 +12,10 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
+#include "Globals.h"
 #include "GameData.h"
 #include "GameEngine.h"
+#include "PlayState.h"
 #include "GameOverState.h"
 
 unsigned number_of_digits(unsigned i)
@@ -25,12 +27,12 @@ GameOverState GameOverState::state;
 
 void GameOverState::Init(GameEngine *game)
 {
-    printf("GameOverState Init\n");
-
-    this->btnX = int(480/2 - 55); // 185 - 285
-    this->btnY = int(272/2); // 136 - 186
-    this->btnWidth = 100;
-    this->btnHeight = 50;
+    this->button = InteractiveButton(
+        int(480 / 2 - 55),
+        int(272 / 2),
+        100,
+        50
+    );
 
     GameData* gameData = game->GetGameData();
     
@@ -47,19 +49,19 @@ void GameOverState::Init(GameEngine *game)
     BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
     BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-    BSP_LCD_FillRect(this->btnX, this->btnY, this->btnWidth, this->btnHeight);
+    BSP_LCD_FillRect(this->button.GetX(), this->button.GetY(), this->button.GetWidth(), this->button.GetHeight());
     
     BSP_LCD_SetFont(&Font16);
     BSP_LCD_SetBackColor(LCD_COLOR_TRANSPARENT);
     BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-    BSP_LCD_DisplayStringAt(0, this->btnY + 16, (uint8_t *)"RESTART", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, this->button.GetY() + 16, (uint8_t *)"RESTART", CENTER_MODE);
 
     BSP_LCD_SetFont(&Font20);
 };
 
 void GameOverState::Cleanup(GameEngine *game)
 {
-    printf("GameOverState Cleanup\n");
+    Globals::LED.write(0);
 };
 
 void GameOverState::Pause(GameEngine *game)
@@ -73,33 +75,12 @@ void GameOverState::Resume(GameEngine *game)
 };
 
 void GameOverState::HandleEvents(GameEngine *game)
-{
-    TS_StateTypeDef touchState;
-    BSP_TS_GetState(&touchState);
-    
-    GameData* gameData = game->GetGameData();
-
-    if (touchState.touchDetected) {
-        bool pressed = true;
-
-        if (!(
-            touchState.touchX[0] > this->btnX && 
-            touchState.touchX[0] < (this->btnX + this->btnWidth)
-        )) {
-            pressed = false;
-        }
-
-        if (!(
-            touchState.touchY[0] > this->btnY &&
-            touchState.touchY[0] < (this->btnY + this->btnHeight))
-        ) {
-            pressed = false;
-        }
-
-        if (pressed) {
-            gameData->programState = 1;
-            gameData->gameScore = 0;
-        }
+{    
+    if (this->button.IsPressed()) {
+        GameData* gameData = game->GetGameData();
+        gameData->gameScore = 0;   
+        
+        game->ChangeState(PlayState::Instance());
     }
 };
 

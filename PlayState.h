@@ -12,7 +12,8 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
-#import "Pipe.h"
+#include "Pipe.h"
+#include "Bird.h"
 #include "GameEngine.h"
 #include "AbstractGameState.h"
 
@@ -33,6 +34,8 @@ class PlayState : public AbstractGameState
         void Update(GameEngine *game);
         void Draw(GameEngine *game);
 
+        void FlyButtonCallback();
+
         static PlayState* Instance()
         {
             return &state;
@@ -43,7 +46,7 @@ class PlayState : public AbstractGameState
 
     private:
         static PlayState state;
-        int pipeIndex;
+        Bird flappy;
         std::vector<Pipe *> pipes;
 };
 

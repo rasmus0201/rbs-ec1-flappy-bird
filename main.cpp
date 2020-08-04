@@ -9,17 +9,7 @@
 #include "GameEngine.h"
 #include "StartState.h"
 
-
-InterruptIn flyBtn(D2);
-DigitalOut led(D3);
-
 GameData gameData;
-Bird flappy;
-
-void fly_btn_activator_rise()
-{
-    gameData.flappy->Up();
-}
 
 void init_lcd()
 {
@@ -110,7 +100,7 @@ int main()
         exit(-1);
     }
 
-    led.write(0);
+    Globals::LED.write(0);
 
     BSP_LCD_Clear(LCD_COLOR_GREEN);
     BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
@@ -125,16 +115,6 @@ int main()
     HAL_Delay(2000);
     BSP_LCD_Clear(LCD_COLOR_GREEN);
 
-    flyBtn.rise(&fly_btn_activator_rise);
-
-    gameData.flappy->Init(
-        gameData.flappyXPos,
-        gameData.flappyYPos,
-        gameData.flappySize,
-        gameData.gravity,
-        gameData.lift
-    );
-
     GameEngine game;
     game.Init(&gameData);
 
@@ -146,170 +126,12 @@ int main()
         game.HandleEvents();
         game.Update();
         game.Draw();
+
+        // HAL_Delay(gameData.frameDelay);
+        HAL_Delay(100);
     }
 
     game.Cleanup();
 
     return 0;
-
-    /*
-    InteractiveButton startBtn(
-        int(SCREEN_WIDTH/2 - 55),
-        int(SCREEN_HEIGHT/2),
-        100,
-        50
-    );
-
-    InteractiveButton restartBtn(
-        int(SCREEN_WIDTH/2 - 55),
-        int(SCREEN_HEIGHT/2),
-        100,
-        50
-    );
-
-    TS_StateTypeDef screenState;
-
-    while(1) {
-        BSP_TS_GetState(&screenState);
-        
-        // START STATE
-        if (state.programState == 0) {
-            if (state.stateChanged) {
-                show_start(&state, startBtn);
-
-                state.stateChanged = false;
-            }
-
-            if (startBtn.IsPressed()) {
-                state.programState = 1;
-                state.gameScore = 0;
-
-                state.stateChanged = true;
-            }
-        }
-
-        // PLAY STATE
-        if (state.programState == 1) {
-            BSP_LCD_Clear(LCD_COLOR_GREEN);
-
-            // Lift the bird if there is a touch on screen
-            if (screenState.touchDetected) {
-                flappy.Up();
-            }
-
-            for(int i = 0; i < state.pipeCount; i++) {
-                if (pipes[i] == nullptr) {
-                    continue;
-                }
-
-                pipes[i]->Draw();
-                pipes[i]->Update();
-
-                // Add score if the pipe's right-most edge is equal to the birds left-most edge
-                // This will ensure that once the bird have passed through the pipe
-                // The user will get an extra scorepoint
-                if (flappy.GetX() == (pipes[i]->GetX() + pipes[i]->GetWidth())) {
-                    state.gameScore += 1;
-                }
-
-                // Check if the bird hit the pipe
-                if (pipes[i]->Collides(flappy)) {
-                    state.programState = 2;
-                    state.frameCount = 0;
-                    state.stateChanged = true;
-                    
-                    pipeIndex = 0;
-                    pipes[pipeIndex++] = new Pipe(
-                        state.pipeWidth,
-                        state.pipeSpacing,
-                        state.pipeSpeed
-                    );
-
-                    for (int i = 1; i < state.pipeCount; i++) {
-                        pipes[i] = nullptr;
-                    }
-
-                    flappy.Init(
-                        state.flappyXPos,
-                        state.flappyYPos,
-                        state.flappySize,
-                        state.gravity,
-                        state.lift
-                    );
-
-                    led.write(1);
-                }
-            }
-            
-            // Game-over if bird is below screen
-            if ((flappy.GetY() + flappy.GetSize()) >= SCREEN_HEIGHT) {
-                state.programState = 2;
-                state.frameCount = 0;
-                state.stateChanged = true;
-                
-                pipeIndex = 0;
-                pipes[pipeIndex++] = new Pipe(
-                    state.pipeWidth,
-                    state.pipeSpacing,
-                    state.pipeSpeed
-                );
-
-                for (int i = 1; i < state.pipeCount; i++) {
-                    pipes[i] = nullptr;
-                }
-
-                flappy.Init(
-                    state.flappyXPos,
-                    state.flappyYPos,
-                    state.flappySize,
-                    state.gravity,
-                    state.lift
-                );
-
-                led.write(1);
-            }
-
-            if (state.programState == 1) {
-                flappy.Update();
-                flappy.Draw();
-
-                // Add more pipes every x frames
-                if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
-                    pipes[pipeIndex] = new Pipe(
-                        state.pipeWidth,
-                        state.pipeSpacing,
-                        state.pipeSpeed
-                    );
-
-                    if (pipeIndex < (state.pipeCount - 1)) {
-                        pipeIndex++;
-                    } else {
-                        pipeIndex = 0;
-                    }
-                }
-
-                state.frameCount++;
-            }
-        }
-
-        // GAMEOVER STATE
-        if (state.programState == 2) {
-            if (state.stateChanged) {
-                show_gameover(&state, restartBtn);
-
-                state.stateChanged = false;
-            }
-
-            if (restartBtn.IsPressed()) {
-                state.programState = 1;
-                state.gameScore = 0;
-
-                state.stateChanged = true;
-                led.write(0);
-            }
-        }
-
-        HAL_Delay(state.frameDelay);
-    }
-    */
 }

@@ -13,22 +13,29 @@
 #include "stm32746g_discovery_ts.h"
 #include "Globals.h"
 #include "GameEngine.h"
+#include "GameOverState.h"
 #include "PlayState.h"
 
 PlayState PlayState::state;
 
 void PlayState::Init(GameEngine *game)
 {
-    printf("PlayState Init\n");
+    Globals::FLY_BUTTON.rise(callback(this, &PlayState::FlyButtonCallback));
 
     GameData* gameData = game->GetGameData();
-    gameData->flappy->Init(
+    this->flappy.Init(
         gameData->flappyXPos,
         gameData->flappyYPos,
         gameData->flappySize,
         gameData->gravity,
         gameData->lift
     );
+
+    this->pipes.push_back(new Pipe(
+        gameData->pipeWidth,
+        gameData->pipeSpacing,
+        gameData->pipeSpeed
+    ));
 
     BSP_LCD_SetFont(&Font20);
     BSP_LCD_Clear(LCD_COLOR_GREEN);
@@ -37,6 +44,11 @@ void PlayState::Init(GameEngine *game)
 void PlayState::Cleanup(GameEngine *game)
 {
     printf("PlayState Cleanup\n");
+    
+    GameData* gameData = game->GetGameData();
+    
+    this->pipes.clear();
+    gameData->frameCount = 0;
 };
 
 void PlayState::Pause(GameEngine *game)
@@ -49,76 +61,60 @@ void PlayState::Resume(GameEngine *game)
     printf("PlayState Resume\n");
 };
 
+void PlayState::FlyButtonCallback()
+{
+    this->flappy.Up();
+}
+
 void PlayState::HandleEvents(GameEngine *game)
 {
-    // Check if game-over
+    TS_StateTypeDef touchState;
+    BSP_TS_GetState(&touchState);
+    
+    // Lift the bird if there is a touch on screen
+    if (touchState.touchDetected) {
+        this->flappy.Up();
+    }
 };
 
 void PlayState::Update(GameEngine *game)
 {
     GameData* gameData = game->GetGameData();
-    
-    for (auto & pipe : this->pipes) {
+
+    std::vector<Pipe *>::iterator it;
+    for(it = this->pipes.begin(); it != this->pipes.end();) {
+        Pipe *pipe = *it;
+        
         pipe->Update();
 
         // Add score if the pipe's right-most edge is equal to the birds left-most edge
         // This will ensure that once the bird have passed through the pipe
         // The user will get an extra scorepoint
-        if (gameData->flappy->GetX() == (pipe->GetX() + pipe->GetWidth())) {
+        if (this->flappy.GetX() == (pipe->GetX() + pipe->GetWidth())) {
             gameData->gameScore += 1;
         }
 
         // Check if the bird hit the pipe
-        if (pipe->Collides(*gameData->flappy)) {
-            gameData->programState = 2;
-            gameData->frameCount = 0;
-            gameData->stateChanged = true;
-            
-            pipeIndex = 0;
-            pipes[pipeIndex++] = new Pipe(
-                gameData->pipeWidth,
-                gameData->pipeSpacing,
-                gameData->pipeSpeed
-            );
+        if (pipe->Collides(this->flappy)) {
+            Globals::LED.write(1);
+            return game->ChangeState(GameOverState::Instance());
+        }
 
-            for (int i = 1; i < gameData->pipeCount; i++) {
-                pipes[i] = nullptr;
-            }
-
-            gameData->flappy->Init(
-                gameData->flappyXPos,
-                gameData->flappyYPos,
-                gameData->flappySize,
-                gameData->gravity,
-                gameData->lift
-            );
-
-            // led.write(1);
-            return;
+        // Remove the pipe if it is of to the left
+        if (pipe->OffScreen() && pipe->GetX() < SCREEN_WIDTH) {
+            it = this->pipes.erase(it);
+        } else {
+            it++;
         }
     }
 
     // Game-over if bird is below screen
-    if ((gameData->flappy->GetY() + gameData->flappy->GetSize()) >= SCREEN_HEIGHT) {
-        gameData->programState = 2;
-        gameData->frameCount = 0;
-        gameData->stateChanged = true;
-        
-        pipeIndex = 0;
-        pipes[pipeIndex++] = new Pipe(
-            gameData->pipeWidth,
-            gameData->pipeSpacing,
-            gameData->pipeSpeed
-        );
-
-        for (int i = 1; i < gameData->pipeCount; i++) {
-            pipes[i] = nullptr;
-        }
-
-        // led.write(1);
+    if ((this->flappy.GetY() + this->flappy.GetSize()) >= SCREEN_HEIGHT) {
+        Globals::LED.write(1);
+        return game->ChangeState(GameOverState::Instance());
     }
 
-    gameData->flappy->Update();
+    this->flappy.Update();
 };
 
 void PlayState::Draw(GameEngine *game)
@@ -130,5 +126,16 @@ void PlayState::Draw(GameEngine *game)
         pipe->Draw();
     }
 
-    gameData->flappy->Draw();
+    this->flappy.Draw();
+
+    // Add more pipes every x frames
+    if (gameData->frameCount % gameData->pipeSpawnFrame == 0 && gameData->frameCount != 0) {
+        this->pipes.push_back(new Pipe(
+            gameData->pipeWidth,
+            gameData->pipeSpacing,
+            gameData->pipeSpeed
+        ));
+    }
+
+    gameData->frameCount++;
 };
