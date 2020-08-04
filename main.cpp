@@ -181,6 +181,7 @@ int main()
         if (state.programState == 1) {
             BSP_LCD_Clear(LCD_COLOR_GREEN);
 
+            // Lift the bird if there is a touch on screen
             if (screenState.touchDetected) {
                 flappy.Up();
             }
@@ -223,6 +224,7 @@ int main()
                 }
             }
             
+            // Game-over if bird is below screen
             if ((flappy.GetY() + flappy.GetSize()) >= SCREEN_HEIGHT) {
                 state.programState = 2;
                 state.frameCount = 0;
@@ -253,6 +255,7 @@ int main()
             flappy.Update();
             flappy.Draw();
 
+            // Add more pipes every x frames
             if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
                 state.gameScore += 1;
                 
@@ -292,5 +295,3 @@ int main()
         HAL_Delay(state.frameDelay);
     }
 }
-
-

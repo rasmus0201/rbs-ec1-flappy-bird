@@ -36,7 +36,8 @@ InteractiveButton::InteractiveButton(int xPos, int yPos, int width, int height)
  * @return true 
  * @return false 
  */
-bool InteractiveButton::IsPressed() {
+bool InteractiveButton::IsPressed()
+{
     TS_StateTypeDef screenState;
     BSP_TS_GetState(&screenState);
 
@@ -92,7 +93,8 @@ bool InteractiveButton::IsPressed() {
  * 
  * @return int 
  */
-int InteractiveButton::GetX() {
+int InteractiveButton::GetX()
+{
     return this->xPos;
 };
 
@@ -101,7 +103,8 @@ int InteractiveButton::GetX() {
  * 
  * @return int 
  */
-int InteractiveButton::GetY() {
+int InteractiveButton::GetY()
+{
     return this->yPos;
 };
 
@@ -110,7 +113,8 @@ int InteractiveButton::GetY() {
  * 
  * @return int 
  */
-int InteractiveButton::GetWidth() {
+int InteractiveButton::GetWidth()
+{
     return this->width;
 };
 
@@ -119,6 +123,7 @@ int InteractiveButton::GetWidth() {
  * 
  * @return int 
  */
-int InteractiveButton::GetHeight() {
+int InteractiveButton::GetHeight()
+{
     return this->height;
 };

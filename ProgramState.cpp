@@ -15,7 +15,8 @@
  * @brief Construct a new Program State:: Program State object
  *
  */
-ProgramState::ProgramState() {
+ProgramState::ProgramState()
+{
     this->programState = 0;
     this->stateChanged = true;
     this->gameScore = 0;
@@ -31,4 +32,4 @@ ProgramState::ProgramState() {
     this->gravity = 0.8;
     this->lift = -5;
     this->flappySize = 10;
-}
+};
