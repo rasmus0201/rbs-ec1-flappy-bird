@@ -56,7 +56,7 @@ bool Pipe::Collides(Bird r)
 };
 
 /**
- * @brief Calculates if the pipe is off the screen
+ * @brief Calculates if the pipe is off the screen (either to the left or right)
  * 
  * @return true 
  * @return false 
@@ -77,6 +77,24 @@ bool Pipe::OffScreen()
     }
 
     return false;
+};
+
+/**
+ * @brief Gets the x-position of the pipe
+ * 
+ */
+int Pipe::GetX()
+{
+    return this->x;
+};
+
+/**
+ * @brief Gets the width of the pipe
+ * 
+ */
+int Pipe::GetWidth()
+{
+    return this->w;
 };
 
 /**

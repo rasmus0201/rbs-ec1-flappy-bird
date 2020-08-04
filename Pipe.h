@@ -43,12 +43,26 @@ class Pipe
         bool Collides(Bird r);
 
         /**
-         * @brief 
+         * @brief Check if the pipe is not on the screen
          * 
          * @return true 
          * @return false 
          */
         bool OffScreen();
+
+        /**
+         * @brief Get the x-position
+         * 
+         * @return int
+         */
+        int GetX();
+
+        /**
+         * @brief Get the width
+         * 
+         * @return int
+         */
+        int GetWidth();
 
         /**
          * @brief Used for every frame update

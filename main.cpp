@@ -194,12 +194,18 @@ int main()
                 pipes[i]->Draw();
                 pipes[i]->Update();
 
+                // Add score if the pipe's right-most edge is equal to the birds left-most edge
+                // This will ensure that once the bird have passed through the pipe
+                // The user will get an extra scorepoint
+                if (flappy.GetX() == (pipes[i]->GetX() + pipes[i]->GetWidth())) {
+                    state.gameScore += 1;
+                }
+
                 // Check if the bird hit the pipe
                 if (pipes[i]->Collides(flappy)) {
                     state.programState = 2;
                     state.frameCount = 0;
                     state.stateChanged = true;
-                    state.gameScore--; // They did not get through, so to compensate for the follwing ++ we decrement here
                     
                     pipeIndex = 0;
                     pipes[pipeIndex++] = new Pipe(
@@ -252,27 +258,27 @@ int main()
                 led.write(1);
             }
 
-            flappy.Update();
-            flappy.Draw();
+            if (state.programState == 1) {
+                flappy.Update();
+                flappy.Draw();
 
-            // Add more pipes every x frames
-            if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
-                state.gameScore += 1;
-                
-                pipes[pipeIndex] = new Pipe(
-                    state.pipeWidth,
-                    state.pipeSpacing,
-                    state.pipeSpeed
-                );
+                // Add more pipes every x frames
+                if (state.frameCount % state.pipeSpawnFrame == 0 && state.frameCount != 0) {
+                    pipes[pipeIndex] = new Pipe(
+                        state.pipeWidth,
+                        state.pipeSpacing,
+                        state.pipeSpeed
+                    );
 
-                if (pipeIndex < (state.pipeCount - 1)) {
-                    pipeIndex++;
-                } else {
-                    pipeIndex = 0;
+                    if (pipeIndex < (state.pipeCount - 1)) {
+                        pipeIndex++;
+                    } else {
+                        pipeIndex = 0;
+                    }
                 }
-            }
 
-            state.frameCount++;
+                state.frameCount++;
+            }
         }
 
         // GAMEOVER STATE
