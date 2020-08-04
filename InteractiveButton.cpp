@@ -16,6 +16,14 @@
 
 /**
  * @brief Construct a new Interactive Button:: Interactive Button object
+ *
+ */
+InteractiveButton::InteractiveButton()
+{
+};
+
+/**
+ * @brief Construct a new Interactive Button:: Interactive Button object
  * 
  * @param xPos 
  * @param yPos 

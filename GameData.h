@@ -26,7 +26,7 @@ class GameData
         float lift;
         int flappySize;
 
-        Bird flappy;
+        Bird* flappy;
 };
 
 #endif

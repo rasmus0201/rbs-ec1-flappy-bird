@@ -2,7 +2,7 @@
 #include "GameEngine.h"
 #include "AbstractGameState.h"
 
-void GameEngine::Init(GameData gameData)
+void GameEngine::Init(GameData* gameData)
 {
     this->gameData = gameData;
     this->isRunning = true;
@@ -76,7 +76,7 @@ bool GameEngine::Running()
     return this->isRunning;
 }
 
-GameData GameEngine::GetGameData()
+GameData* GameEngine::GetGameData()
 {
     return this->gameData;
 }

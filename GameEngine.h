@@ -21,7 +21,7 @@ class AbstractGameState;
 class GameEngine
 {
     public:
-        void Init(GameData gameData);
+        void Init(GameData* gameData);
         void Cleanup();
 
         void ChangeState(AbstractGameState *state);
@@ -31,12 +31,12 @@ class GameEngine
         void Update();
         void Draw();
         bool Running();
-        GameData GetGameData();
+        GameData* GetGameData();
         void Quit();
 
     private:
         std::vector<AbstractGameState *> states;
-        GameData gameData;
+        GameData* gameData;
         bool isRunning;
 };
 

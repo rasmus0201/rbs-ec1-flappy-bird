@@ -14,6 +14,7 @@
 
 #include "GameEngine.h"
 #include "AbstractGameState.h"
+#include "InteractiveButton.h"
 
 /**
  * @brief Start state - used when starting the game
@@ -42,10 +43,7 @@ class StartState : public AbstractGameState
 
     private:
         static StartState state;
-        int btnX;
-        int btnY;
-        int btnWidth;
-        int btnHeight;
+        InteractiveButton button;
 };
 
 #endif

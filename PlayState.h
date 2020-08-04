@@ -12,6 +12,7 @@
 #ifndef PLAY_STATE_H
 #define PLAY_STATE_H
 
+#import "Pipe.h"
 #include "GameEngine.h"
 #include "AbstractGameState.h"
 
@@ -42,6 +43,8 @@ class PlayState : public AbstractGameState
 
     private:
         static PlayState state;
+        int pipeIndex;
+        std::vector<Pipe *> pipes;
 };
 
 #endif

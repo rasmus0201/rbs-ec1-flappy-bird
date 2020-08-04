@@ -32,11 +32,11 @@ void GameOverState::Init(GameEngine *game)
     this->btnWidth = 100;
     this->btnHeight = 50;
 
-    GameData gameData = game->GetGameData();
+    GameData* gameData = game->GetGameData();
     
-    uint8_t scoreStr[13 + number_of_digits(gameData.gameScore)];
+    uint8_t scoreStr[13 + number_of_digits(gameData->gameScore)];
     BSP_LCD_SetFont(&Font20);
-    sprintf((char *)scoreStr, "Your score: %d", gameData.gameScore);
+    sprintf((char *)scoreStr, "Your score: %d", gameData->gameScore);
 
     BSP_LCD_Clear(LCD_COLOR_RED);
     BSP_LCD_SetBackColor(LCD_COLOR_RED);
@@ -74,28 +74,31 @@ void GameOverState::Resume(GameEngine *game)
 
 void GameOverState::HandleEvents(GameEngine *game)
 {
-    GameData gameData = game->GetGameData();
+    TS_StateTypeDef touchState;
+    BSP_TS_GetState(&touchState);
+    
+    GameData* gameData = game->GetGameData();
 
-    if (gameData.screenState.touchDetected) {
+    if (touchState.touchDetected) {
         bool pressed = true;
 
         if (!(
-            gameData.screenState.touchX[0] > this->btnX && 
-            gameData.screenState.touchX[0] < (this->btnX + this->btnWidth)
+            touchState.touchX[0] > this->btnX && 
+            touchState.touchX[0] < (this->btnX + this->btnWidth)
         )) {
             pressed = false;
         }
 
         if (!(
-            gameData.screenState.touchY[0] > this->btnY &&
-            gameData.screenState.touchY[0] < (this->btnY + this->btnHeight))
+            touchState.touchY[0] > this->btnY &&
+            touchState.touchY[0] < (this->btnY + this->btnHeight))
         ) {
             pressed = false;
         }
 
         if (pressed) {
-            gameData.programState = 1;
-            gameData.gameScore = 0;
+            gameData->programState = 1;
+            gameData->gameScore = 0;
         }
     }
 };

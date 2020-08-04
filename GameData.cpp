@@ -20,6 +20,8 @@ GameData::GameData()
     this->lift = -5;
     this->flappySize = 10;
 
-    this->flappy = Bird();
+    Bird bird = Bird();
+
+    this->flappy = &bird;
 };
 

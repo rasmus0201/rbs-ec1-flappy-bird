@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
-#include "ProgramState.h"
+#include "Globals.h"
 #include "InteractiveButton.h"
 #include "Bird.h"
 #include "Pipe.h"
@@ -9,8 +9,6 @@
 #include "GameEngine.h"
 #include "StartState.h"
 
-#define SCREEN_HEIGHT 272
-#define SCREEN_WIDTH 480
 
 InterruptIn flyBtn(D2);
 DigitalOut led(D3);
@@ -20,7 +18,7 @@ Bird flappy;
 
 void fly_btn_activator_rise()
 {
-    gameData.flappy.Up();
+    gameData.flappy->Up();
 }
 
 void init_lcd()
@@ -129,7 +127,7 @@ int main()
 
     flyBtn.rise(&fly_btn_activator_rise);
 
-    gameData.flappy.Init(
+    gameData.flappy->Init(
         gameData.flappyXPos,
         gameData.flappyYPos,
         gameData.flappySize,
@@ -138,7 +136,7 @@ int main()
     );
 
     GameEngine game;
-    game.Init(gameData);
+    game.Init(&gameData);
 
     // Load the start state
     game.ChangeState(StartState::Instance());
